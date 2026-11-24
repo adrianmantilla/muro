@@ -2,7 +2,7 @@
 
 Tablero de imágenes de referencia y notas dentro de Autodesk Maya (2026 y 2027, Mac y Windows).
 
-![Muro](docs/muro.png)
+![Muro en Maya 2027: un tablero con referencias, marcos, notas y un marcador; desplazar, acercar, encuadrar y añadir una nota](docs/muro.gif)
 
 Un lienzo infinito acoplable como cualquier panel de Maya. Los alumnos sueltan ahí sus referencias, las ordenan,
 las anotan y las llevan al visor como planos de imagen a escala. El tablero se guarda dentro del proyecto de Maya,
@@ -36,6 +36,8 @@ Script Editor al instalar).
 | **Modo fantasma** | El tablero se vuelve transparente encima del visor y deja pasar los clics a Maya, para modelar calcando. «Ajustar» permite colocar las referencias. |
 | **Proyecto y escena** | Los tableros viven en `sourceimages/muro` del proyecto, con copia de las imágenes. La escena recuerda su tablero y lo abre al abrirla. |
 | **Aula** | Exportar el tablero o un marco como PNG, guardar plantillas, y exportar o importar un tablero en `.zip` para repartirlo a los alumnos. |
+
+![Modo fantasma: el render de referencia, transparente sobre el visor de Maya](docs/fantasma.jpg)
 
 Clic derecho abre un menú de seis puntos, el mismo de [Radial](https://github.com/adrianmantilla/radial), con
 acciones distintas para imagen, nota, marco o fondo; «Más…» abre la lista completa.
