@@ -51,6 +51,10 @@ def widget_de(nombre):
     return shiboken.wrapInstance(int(puntero), QtWidgets.QWidget)
 
 
+# Giro del plano libre para que mire a cada cámara ortográfica (sale mirando a +Z, hacia front).
+ROTACION_PLANO = {"front": (0.0, 0.0, 0.0), "side": (0.0, 90.0, 0.0), "top": (-90.0, 0.0, 0.0)}
+
+
 class ServiciosMaya(Servicios):
     en_maya = True
 
@@ -174,15 +178,17 @@ class ServiciosMaya(Servicios):
         nombre = "muro_" + "".join(c if c.isalnum() else "_" for c in p.get("nombre", "plano"))[:40]
         cmds.undoInfo(openChunk=True, chunkName="MuroPlano")
         try:
+            # Plano libre en el mundo, no pegado a la cámara: un plano pegado a una cámara
+            # ortográfica se ajusta al encuadre (llena toda la vista) e ignora width/height.
             # Maya no deja usar fileName junto con width/height: se crea y luego se dimensiona.
-            transformada, forma = cmds.imagePlane(camera=camara, fileName=ruta_png, name=nombre,
-                                                  showInAllViews=False)
+            transformada, forma = cmds.imagePlane(fileName=ruta_png, name=nombre)
+            transformada = cmds.ls(transformada, long=True)[0]
             cmds.setAttr(forma + ".width", datos["ancho"])
             cmds.setAttr(forma + ".height", datos["alto"])
-            x, y, z = datos["centro"]
-            cmds.setAttr(forma + ".imageCenterX", x)
-            cmds.setAttr(forma + ".imageCenterY", y)
-            cmds.setAttr(forma + ".imageCenterZ", z)
+            for eje in "XYZ":
+                cmds.setAttr(forma + ".imageCenter" + eje, 0.0)
+            cmds.xform(transformada, worldSpace=True, translation=datos["centro"],
+                       rotation=ROTACION_PLANO.get(camara, (0.0, 0.0, 0.0)))
             if cmds.attributeQuery("alphaGain", node=forma, exists=True):
                 cmds.setAttr(forma + ".alphaGain", p["opacidad"])
             if p.get("capa"):
