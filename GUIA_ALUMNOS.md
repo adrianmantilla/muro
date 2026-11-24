@@ -44,6 +44,8 @@ Las imágenes se copian dentro del proyecto: aunque borres el original, el table
 
 - Clic derecho en una imagen › **Plano de imagen**: marca A en la cabeza y B en los pies, escribe la altura real
   y elige la cámara (front, side o top). El plano aparece a escala con los pies en el suelo.
+  Es un plano libre colocado detrás de la escena mirando a esa cámara, así que también se ve en la perspectiva;
+  para ocultarlo, apaga la capa «muro_referencias».
 - **I** (cuentagotas): haz clic en un color de la imagen. Si tienes un objeto seleccionado en Maya, su material
   toma ese color. Los colores quedan abajo a la izquierda para volver a usarlos.
 - **Fantasma** (botón del fantasma): el tablero se queda transparente encima del visor y puedes seguir modelando.

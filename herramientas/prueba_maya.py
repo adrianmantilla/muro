@@ -76,9 +76,12 @@ def main():
             esperado = escala.plano_de_imagen(400, 800, (200, 100), (200, 700), 180.0, "front")
             comprobar(cerca(cmds.getAttr(forma + ".width"), esperado["ancho"]), "ancho del plano a escala")
             comprobar(cerca(cmds.getAttr(forma + ".height"), esperado["alto"]), "alto del plano a escala")
-            comprobar(cerca(cmds.getAttr(forma + ".imageCenterY"), esperado["centro"][1]), "los pies en el suelo")
-            comprobar(cerca(cmds.getAttr(forma + ".alphaGain"), 0.5), "opacidad del plano")
             transformada = cmds.listRelatives(forma, parent=True, fullPath=True)[0]
+            posicion = cmds.xform(transformada, query=True, worldSpace=True, translation=True)
+            comprobar(all(cerca(a, b) for a, b in zip(posicion, esperado["centro"])), "los pies en el suelo")
+            comprobar(not cmds.listConnections(forma, type="camera"),
+                      "plano libre: no se ajusta al encuadre de la cámara")
+            comprobar(cerca(cmds.getAttr(forma + ".alphaGain"), 0.5), "opacidad del plano")
             caja = cmds.exactWorldBoundingBox(transformada)
             print("    caja del plano:", [round(v, 2) for v in caja], "esperado", round(esperado["ancho"], 2), "x",
                   round(esperado["alto"], 2), "centro", [round(v, 2) for v in esperado["centro"]])
@@ -87,14 +90,18 @@ def main():
                 comprobar(cerca(caja[1], 0.0 - 100 * esperado["unidades_por_px"], 0.02), "los pies del dibujo en y=0")
             else:
                 print("    (sin caja: mayapy no evalúa la geometría del plano; se comprueba en Maya con interfaz)")
-            camaras = cmds.listConnections(forma, type="camera") or cmds.listRelatives(
-                cmds.listRelatives(forma, parent=True)[0], parent=True) or []
-            comprobar(any("front" in c for c in camaras), "el plano va en la cámara front")
+            giro = cmds.xform(transformada, query=True, worldSpace=True, rotation=True)
+            comprobar(all(cerca(v, 0.0) for v in giro), "el plano mira a la cámara front")
             comprobar(cmds.objExists("muro_referencias") and cmds.getAttr("muro_referencias.displayType") == 2,
                       "capa de referencias bloqueada")
         parametros["camara"] = "side"
         s.plano_de_imagen(ruta, parametros)
         comprobar(len(cmds.ls(type="imagePlane")) == 2, "también en side")
+        lateral = [f for f in cmds.ls(type="imagePlane") if f != forma]
+        if lateral:
+            giro = cmds.xform(cmds.listRelatives(lateral[0], parent=True, fullPath=True)[0], query=True,
+                              worldSpace=True, rotation=True)
+            comprobar(cerca(giro[1], 90.0), "el plano de side mira a la cámara side")
 
         # Color en materiales
         cubo = cmds.polyCube(name="muro_cubo")[0]
