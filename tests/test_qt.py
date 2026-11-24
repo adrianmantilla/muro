@@ -104,7 +104,9 @@ class Tablero(unittest.TestCase):
         item = self.L.items[e["id"]]
         return self.L.mapFromScene(item.mapToScene(QPointF(e["ancho"] * fx, item.e["alto"] * fy)))
 
-    def arrastrar(self, desde, hasta, boton=Qt.LeftButton, mods=Qt.NoModifier, pasos=5):
+    def arrastrar(self, desde, hasta, boton=None, mods=None, pasos=5):
+        boton = Qt.LeftButton if boton is None else boton
+        mods = Qt.NoModifier if mods is None else mods
         QtTest.QTest.mousePress(self.vp(), boton, mods, desde)
         for i in range(1, pasos + 1):
             p = desde + (hasta - desde) * i / pasos
@@ -114,7 +116,8 @@ class Tablero(unittest.TestCase):
         QtTest.QTest.mouseRelease(self.vp(), boton, mods, hasta)
         APP.processEvents()
 
-    def tecla(self, tecla, mods=Qt.NoModifier):
+    def tecla(self, tecla, mods=None):
+        mods = Qt.NoModifier if mods is None else mods
         self.L.setFocus()
         QtTest.QTest.keyClick(self.L, tecla, mods)
         APP.processEvents()

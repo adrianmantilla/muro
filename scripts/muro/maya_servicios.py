@@ -174,9 +174,11 @@ class ServiciosMaya(Servicios):
         nombre = "muro_" + "".join(c if c.isalnum() else "_" for c in p.get("nombre", "plano"))[:40]
         cmds.undoInfo(openChunk=True, chunkName="MuroPlano")
         try:
+            # Maya no deja usar fileName junto con width/height: se crea y luego se dimensiona.
             transformada, forma = cmds.imagePlane(camera=camara, fileName=ruta_png, name=nombre,
-                                                  width=datos["ancho"], height=datos["alto"],
-                                                  maintainRatio=False, showInAllViews=False)
+                                                  showInAllViews=False)
+            cmds.setAttr(forma + ".width", datos["ancho"])
+            cmds.setAttr(forma + ".height", datos["alto"])
             x, y, z = datos["centro"]
             cmds.setAttr(forma + ".imageCenterX", x)
             cmds.setAttr(forma + ".imageCenterY", y)
