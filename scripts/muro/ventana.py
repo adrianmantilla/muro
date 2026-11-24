@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 
-from muro import archivo, iconos, modelo
+from muro import archivo, estilo, iconos, modelo
 from muro.fantasma import ESTILO_BOTON, Fantasma
 from muro.i18n import t
 from muro.lienzo import Lienzo, Servicios
@@ -549,7 +549,13 @@ class VentanaMuro(QtWidgets.QWidget):
         return menu
 
     def _pedir_texto(self, titulo, etiqueta, valor=""):
-        texto, ok = QtWidgets.QInputDialog.getText(self, titulo, etiqueta, text=valor)
+        dialogo = QtWidgets.QInputDialog(self)
+        estilo.aplicar(dialogo, "MuroDialogo")
+        dialogo.setWindowTitle(titulo)
+        dialogo.setLabelText(etiqueta)
+        dialogo.setTextValue(valor)
+        ok = dialogo.exec_() if hasattr(dialogo, "exec_") else dialogo.exec()
+        texto = dialogo.textValue()
         return texto.strip() if ok and texto.strip() else None
 
     def pedir_nuevo(self):
@@ -670,6 +676,7 @@ class VentanaMuro(QtWidgets.QWidget):
 
     def mostrar_atajos(self):
         caja = QtWidgets.QMessageBox(self)
+        estilo.aplicar(caja, "MuroDialogo")
         caja.setWindowTitle(t("m_atajos"))
         caja.setTextFormat(Qt.RichText)
         caja.setText(t("atajos_html"))

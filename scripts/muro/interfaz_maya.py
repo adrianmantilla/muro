@@ -5,7 +5,7 @@ import os
 from maya import cmds
 
 import muro
-from muro import archivo
+from muro import archivo, pack
 from muro.ajustes import Ajustes
 from muro.i18n import t
 from muro.qt import QtWidgets, destruir, shiboken, sigue_vivo, ventana_maya
@@ -210,10 +210,7 @@ def _crear_ordenes():
 
 
 def _crear_menu():
-    if cmds.menu(MENU, exists=True):
-        cmds.deleteUI(MENU)
-    principal = "MayaWindow"
-    cmds.menu(MENU, label="Muro", parent=principal, tearOff=True)
+    pack.crear_menu(MENU, "Muro")
     cmds.menuItem(label=t("menu_abrir"), command=lambda *_: mostrar(), annotation=t("cmd_abrir"))
     cmds.menuItem(label=t("menu_nuevo"), command=lambda *_: nuevo())
     cmds.menuItem(label=t("menu_importar"), command=lambda *_: importar())
@@ -252,5 +249,4 @@ def detener():
     if v is not None:
         destruir(v)
     _estado["ventana"] = None
-    if cmds.menu(MENU, exists=True):
-        cmds.deleteUI(MENU)
+    pack.quitar_menu(MENU)
