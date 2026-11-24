@@ -1,6 +1,6 @@
 """Diálogo «Plano de imagen»: marcar dos puntos, decir cuánto miden y elegir cámara."""
 
-from muro import escala
+from muro import escala, estilo
 from muro.i18n import t
 from muro.qt import QtCore, QtGui, QtWidgets, posicion_local
 
@@ -89,6 +89,7 @@ class DialogoPlano(QtWidgets.QDialog):
         self.setWindowTitle(t("plano_titulo", nombre=nombre))
         self.ajustes = ajustes
         self.unidad_escena = unidad_escena
+        estilo.aplicar(self, "MuroDialogoPlano")
         self.vista = VistaPuntos(imagen)
         disposicion = QtWidgets.QVBoxLayout(self)
         ayuda = QtWidgets.QLabel(t("plano_ayuda"))
@@ -96,7 +97,7 @@ class DialogoPlano(QtWidgets.QDialog):
         disposicion.addWidget(ayuda)
         disposicion.addWidget(self.vista, 1)
 
-        formulario = QtWidgets.QFormLayout()
+        formulario = estilo.formulario()
         fila_altura = QtWidgets.QHBoxLayout()
         self.altura = QtWidgets.QDoubleSpinBox()
         self.altura.setDecimals(3)
@@ -135,10 +136,10 @@ class DialogoPlano(QtWidgets.QDialog):
         disposicion.addLayout(formulario)
 
         self.resumen = QtWidgets.QLabel()
-        self.resumen.setStyleSheet("color:#9a9a9a")
+        estilo.rol(self.resumen, "tenue")
         disposicion.addWidget(self.resumen)
         botones = QtWidgets.QDialogButtonBox()
-        botones.addButton(t("boton_crear"), QtWidgets.QDialogButtonBox.AcceptRole)
+        estilo.primario(botones.addButton(t("boton_crear"), QtWidgets.QDialogButtonBox.AcceptRole))
         botones.addButton(t("boton_cancelar"), QtWidgets.QDialogButtonBox.RejectRole)
         botones.accepted.connect(self.accept)
         botones.rejected.connect(self.reject)
