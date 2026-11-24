@@ -102,11 +102,20 @@ def main():
         atributo = escala.ATRIBUTO_COLOR.get(cmds.nodeType(lambert), "color")
         valor = cmds.getAttr("{}.{}".format(lambert, atributo))[0]
         comprobar(valor[0] > 0.9 and valor[1] < 0.05, "el color llega al material ({})".format(lambert))
+        try:
+            cmds.loadPlugin("mtoa", quiet=True)
+        except RuntimeError:
+            print("    (Arnold no se puede cargar en mayapy; se salta aiStandardSurface)")
         for tipo in ("standardSurface", "aiStandardSurface", "openPBRSurface"):
             try:
                 material = cmds.shadingNode(tipo, asShader=True)
             except RuntimeError:
-                print("    (sin " + tipo + " en esta versión)")
+                material = None
+            # Sin el plugin, Maya crea un nodo «unknown» en vez de fallar.
+            if not material or cmds.nodeType(material) != tipo:
+                print("    (sin " + tipo + " en esta sesión)")
+                if material:
+                    cmds.delete(material)
                 continue
             cmds.select(material)
             s.aplicar_color("#00ff00")

@@ -75,7 +75,7 @@ def _imagen(ruta, ancho, alto, color, mitad=None):
     return ruta
 
 
-@unittest.skipIf(QtWidgets is None, "PySide6 no está instalado")
+@unittest.skipIf(QtWidgets is None, "falta PySide6 o QtTest (el mayapy de Maya no trae QtTest)")
 class Tablero(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.mkdtemp()
